@@ -9,6 +9,11 @@ function Book(title, author, numPages, isRead) {
     }
 }
 
+// toggles the isRead state of the book
+Book.prototype.toggleIsRead = function() {
+    this.isRead = !this.isRead;
+}
+
 function addBookToLibrary(book) {
     if (typeof book !== Book) {
         console.log("ERROR: not a book");
@@ -17,45 +22,72 @@ function addBookToLibrary(book) {
     myLibrary.push(book);
 }
 
+function buildRemoveButton(bookCard) {
+    const removeButton = document.createElement("button");
+    removeButton.classList.add("remove-book-button");
+    removeButton.addEventListener("click", (e) => {
+        const x = bookCard.getAttribute("data-id");
+        myLibrary.splice(x, 1); // remove the Book from myLibrary
+        
+        const bookCards = bookGrid.children;
+        for (let i = 0; i <  bookCards.length; i++) {
+            const idx = parseInt(bookCards[i].getAttribute("data-id"));
+            if (idx > x) {
+                bookCards[i].setAttribute("data-id", idx-1);
+            }
+        }
+        currIndex--;
+        bookGrid.removeChild(bookCard);
+    });
+    return removeButton;
+}
+
+function buildIsReadToggle(book, bookCard) {
+    const isReadToggle = document.createElement("input");
+    isReadToggle.type = "checkbox";
+    isReadToggle.checked = book.isRead;
+    isReadToggle.classList.add("is-read-toggle");
+    isReadToggle.addEventListener("click", () => {
+        const idx = parseInt(bookCard.getAttribute("data-id"));
+        myLibrary[idx].toggleIsRead();
+
+        const isRead = bookCard.querySelector(".is-read-text");
+        isRead.innerText = book.isRead ? "Has been read" : "Not read yet";
+    });
+
+    return isReadToggle;
+}
+
 function buildBookCard(book) {
     const bookCard = document.createElement("div");
     bookCard.classList.add("book-card");
     bookCard.setAttribute("data-id", currIndex++);
 
-    const removeButton = document.createElement("button");
-    removeButton.classList.add("remove-book-button");
-    removeButton.addEventListener("click", (e) => {
-        const x = bookCard.getAttribute("data-id")
-        // remove the Book from myLibrary
-        myLibrary.splice(x, 1);
-
-        // have to fix indexing shift when an item is removed 
-
-        bookGrid.removeChild(bookCard);
-        /*bookCard.remove();*/
-    });
-
-    bookCard.appendChild(removeButton);
+    const removeButton = buildRemoveButton(bookCard);
 
     const title = document.createElement("h3");
     title.textContent = book.title;
-    bookCard.appendChild(title);
-
+    
     const author = document.createElement("h4");
     author.textContent = book.author;
-    bookCard.appendChild(author);
 
     const numPages = document.createElement("p");
     numPages.textContent = "pages: "+ book.numPages;
-    bookCard.appendChild(numPages);
 
-    const isRead = document.createElement("p");
-    console.log(typeof book.isRead);
-    isRead.textContent = book.isRead == "on" ? "Has been read" : "Not read yet";
-    bookCard.appendChild(isRead);
+    const isReadDiv = document.createElement("div");
+    isReadDiv.classList.add("is-read-container");
+    const isReadText = document.createElement("p");
+    isReadText.classList.add("is-read-text");
+    isReadText.innerText = book.isRead ? "Has been read" : "Not read yet";
+    const isReadToggle = buildIsReadToggle(book, bookCard);
+    isReadDiv.appendChild(isReadText)
+    isReadDiv.appendChild(isReadToggle);
+
+    bookCard.append(removeButton, title, author, numPages, isReadDiv);
 
     return bookCard;
 }
+
 
 const myLibrary = []; //
 let currIndex = 0;
@@ -85,11 +117,11 @@ bookForm.addEventListener("submit", (e) => {
     for ([key, value] of Object.entries(formProps)) {
         newBook[key] = value;
     }
+    newBook.isRead = (newBook.isRead == "on") ? true : false;
     addBookToLibrary(newBook);
 
     let newBookCard = buildBookCard(newBook);
     bookGrid.appendChild(newBookCard);
     addBookDialog.close();
 
-    console.log(myLibrary);
 });
