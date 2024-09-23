@@ -8,11 +8,19 @@ body {
     height: 100vh;
     display: flex;
     flex-direction: column;
+    font-family: Roboto;
+    background-color: rgb(23, 32, 78);
+}
+
+.header {
+    font-size: 1.5rem;
+    color: white;
+    height: 90px;
+    width: fit-content;
+    margin: 0 auto;
 }
 
 .book-grid {
-    height: 75%;
-    background-color: rgb(23, 32, 78);
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 300px));
     grid-template-rows: repeat(auto-fit, minmax(200px, 300px));
@@ -21,9 +29,33 @@ body {
 }
 
 .book-card {
-    height: 200px;
-    background-image: linear-gradient(rgb(255, 255, 255), rgb(165, 182, 190));
-    padding: 30px;
+    height: 250px;
+    width: 180px;
+    background-image: linear-gradient(rgb(255, 244, 208), rgb(201, 151, 122));
+    border: 1px solid rgb(48, 24, 9);
+    padding: 25px;
+    position: relative;
+
+    h4 {
+        font-size: 0.9rem;
+        font-weight: 500;
+        margin-bottom: 10px;
+    }
+    
+    p {
+        font-size: 0.8rem;
+    }
+}
+
+.remove-book-button {
+    background-image: url('./svg/close.svg');
+    background-color: transparent;
+    border: none;
+    height: 16px;
+    width: 16px;
+    position: absolute;
+    right: 5px;
+    top: 5px;
 }
 
 #add-book-button {
@@ -36,9 +68,12 @@ body {
     border-radius: 30px;
     font-size: 1rem;
     font-weight: 600;
+    position: fixed;
+    bottom: 40px;
+    left: calc(50% - 40px);
 }
 
-#add-book-button:hover {
+button:hover {
     cursor: pointer;
 }
 
@@ -48,6 +83,74 @@ body {
 
 #add-book-dialog {
     margin: auto;
+    width: 400px;
+    padding: 20px;
     border-radius: 10px;
     border: none;
+}
+
+::backdrop {
+	background-color: rgba(0, 0, 0, 0.09);
+	opacity: 1;
+	backdrop-filter: blur(0px);
+	filter:	blur(3px);
+}
+
+form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+form input[type="text"], 
+form input[type="number"] { 
+    background-color: rgba(190, 199, 212, 0.37);
+    height: 25px;
+    margin: auto;
+    outline: none;
+    border: none;
+    border-radius: 15px;
+    font-size: 1rem;
+    padding-left: 8px;
+}
+
+form input[type="text"]:focus, 
+form input[type="number"]:focus {
+    background-color: rgba(161, 170, 182, 0.37);
+}
+
+/* removes the increment up / down buttons on number inputs */
+#add-book-dialog input[type=number]::-webkit-inner-spin-button, 
+#add-book-dialog input[type=number]::-webkit-outer-spin-button { 
+  -webkit-appearance: none; 
+  margin: 0; 
+}
+
+.close-dialog-button {
+    grid-column: 1 / 2;
+}
+
+button[type="submit"] {
+    grid-column: 2 / 3;
+}
+
+.add-book-buttons > button {
+    margin: auto;
+    background-color: rgb(196, 196, 196);
+    border: none;
+    border-radius: 15px;
+    width: 50%;
+    font-weight: 500;
+    font-size: 1rem;
+    padding: 5px 15px;
+}
+
+.add-book-buttons > button:active {
+    background-color: rgb(163, 163, 163);
+}
+
+.add-book-buttons {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
 }
